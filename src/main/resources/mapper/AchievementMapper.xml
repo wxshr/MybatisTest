@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.AchievementMapper">
+
+    <!-- 插入成绩 -->
+    <insert id="insertAchievement" parameterType="pojo.Achievement">
+        INSERT INTO achievement (id, courseName, score, stuid) VALUES (#{id}, #{courseName}, #{score}, #{stuid})
+    </insert>
+
+    <!-- 删除成绩 -->
+    <delete id="deleteAchievementById" parameterType="String">
+        DELETE FROM achievement WHERE id = #{id}
+    </delete>
+
+</mapper>

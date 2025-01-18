@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pojo.Person">
+    <select id="findPersonWithIdCardById" parameterType="int" resultMap="IdCardWithPersonResult">
+        SELECT p.id, p.name, p.grade, p.schoolCardId, ic.id as cardid, ic.money as cardmoney
+        FROM person p
+                 LEFT JOIN idcard ic ON p.schoolCardId = ic.id
+        WHERE p.id=#{id}
+    </select>
+
+    <select id="findPersonWithIdCardByName" parameterType="String" resultMap="IdCardWithPersonResult">
+        SELECT p.id, p.name, p.grade, p.schoolCardId, ic.id as cardid, ic.money as cardmoney
+        FROM person p
+                 LEFT JOIN idcard ic ON p.schoolCardId = ic.id
+        WHERE p.name=#{name}
+    </select>
+
+    <select id="findAllPersonWithIdCard" resultMap="IdCardWithPersonResult">
+        SELECT p.id, p.name, p.grade, p.schoolCardId, ic.id as cardid, ic.money as cardmoney
+        FROM person p
+                 LEFT JOIN idcard ic ON p.schoolCardId = ic.id
+    </select>
+
+    <resultMap id="IdCardWithPersonResult" type="pojo.Person">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="grade" column="grade"/>
+        <result property="schoolCardId" column="schoolCardId"/>
+        <association property="card" javaType="pojo.IdCard">
+            <id property="id" column="cardid"/>
+            <result property="money" column="cardmoney"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertPerson" parameterType="pojo.Person">
+        INSERT INTO person (id, name, grade, schoolCardId)
+        VALUES (#{id}, #{name}, #{grade}, #{schoolCardId})
+    </insert>
+
+    <update id="updatePerson" parameterType="pojo.Person">
+        UPDATE person
+        SET name=#{name}, grade=#{grade}, schoolCardId=#{schoolCardId}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deletePerson" parameterType="int">
+        DELETE FROM person WHERE id=#{id}
+    </delete>
+</mapper>

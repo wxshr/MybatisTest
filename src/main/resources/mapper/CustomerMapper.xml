@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pojo.Customer">
+    
+    <select id="findCustomerWithOrderById" parameterType="int" resultMap="IdWithOrderResult">
+        SELECT c.*, c.id AS cid, o.id AS oid FROM customer c, `order` o WHERE c.id = o.customer_id AND c.id = #{id}
+    </select>
+    <resultMap id="customerWithOrderResult" type="pojo.Customer">
+        <id property="id" column="cid"></id>
+        <result property="name" column="name"></result>
+        <result property="adddress" column="address"></result>
+        <collection property="orderList" javaType="List" ofType="pojo.Order">
+                    <id property="id" column="oid"></id>
+                    <result property="number" column="number"></result>
+        </collection>
+    </resultMap>
+</mapper>

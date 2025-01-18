@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.StuMapper">
+
+    <!-- 插入学生 -->
+    <insert id="insertStu" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO stu (name, grade) VALUES (#{name}, #{grade})
+    </insert>
+
+    <!-- 删除学生 -->
+    <delete id="deleteStuById" parameterType="int">
+        DELETE FROM stu WHERE id = #{id}
+    </delete>
+
+    <!-- 更新学生 -->
+    <update id="updateStu" parameterType="pojo.Stu">
+        UPDATE stu SET name = #{name}, grade = #{grade} WHERE id = #{id}
+    </update>
+
+    <!-- 查询单个学生 -->
+    <select id="findStuById" parameterType="int" resultType="pojo.Stu">
+        SELECT * FROM stu WHERE id = #{id}
+    </select>
+
+    <!-- 一对多查询：查询学生及其所有成绩 -->
+    <select id="findStuWithAchievementsById" parameterType="int" resultMap="StuWithAchievementsResult">
+        SELECT s.id, s.name, s.grade, a.id AS aid, a.courseName, a.score, a.stuid
+        FROM stu s
+                 LEFT JOIN achievement a ON s.id = a.stuid
+        WHERE s.id = #{id}
+    </select>
+
+    <!-- 结果映射 -->
+    <resultMap id="StuWithAchievementsResult" type="pojo.Stu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="grade" column="grade"/>
+        <collection property="achievementList" ofType="pojo.Achievement" column="id" javaType="java.util.ArrayList">
+            <id property="id" column="aid"/>
+            <result property="courseName" column="courseName"/>
+            <result property="score" column="score"/>
+            <result property="stuid" column="stuid"/>
+        </collection>
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pojo.UserMapper">
+
+    <select id="findUserById" parameterType="int" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user WHERE id = #{id}
+    </select>
+
+    <select id="findUsersByTags" parameterType="map" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user
+        <where>
+            <if test="username != null">
+                AND username = #{username}
+            </if>
+            <if test="email != null">
+                AND email = #{email}
+            </if>
+            <if test="phone != null">
+                AND phone = #{phone}
+            </if>
+            <if test="ids != null and ids.size > 0">
+                AND id IN
+                <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="searchUsers" parameterType="map" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user
+        <where>
+            <choose>
+                <when test="username != null">
+                    username = #{username}
+                </when>
+                <when test="email != null">
+                    email = #{email}
+                </when>
+                <when test="phone != null">
+                    phone = #{phone}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+<!--    <select id="findUsersByComplexConditions" parameterType="map" resultType="pojo.User">-->
+<!--        SELECT id, username, email, phone FROM user-->
+<!--        <where>-->
+<!--            <if test="username != null">-->
+<!--                AND username = #{username}-->
+<!--            </if>-->
+<!--            <if test="email != null">-->
+<!--                AND email = #{email}-->
+<!--            </if>-->
+<!--            <if test="phone != null">-->
+<!--                AND phone = #{phone}-->
+<!--            </if>-->
+<!--            <if test="minId != null">-->
+<!--                AND id >= #{minId}-->
+<!--            </if>-->
+<!--            <if test="maxId != null">-->
+<!--                AND id <= #{maxId}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+
+    <update id="updateUser" parameterType="pojo.User">
+        UPDATE user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phone != null">
+                phone = #{phone}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
+
+    <insert id="insertUser" parameterType="pojo.User">
+        INSERT INTO user (username, email, phone)
+        VALUES (#{username}, #{email}, #{phone})
+    </insert>
+
+    <insert id="insertUsers" parameterType="list">
+        INSERT INTO user (username, email, phone)
+        VALUES
+        <foreach item="user" index="index" collection="list" separator=",">
+            (#{user.username}, #{user.email}, #{user.phone})
+        </foreach>
+    </insert>
+
+    <select id="findUsersWithPagination" parameterType="map" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user
+                                                   LIMIT #{offset}, #{limit}
+    </select>
+
+<!--    <select id="findUsersByIds" parameterType="list" resultType="pojo.User">-->
+<!--        SELECT id, username, email, phone FROM user-->
+<!--        WHERE id IN-->
+<!--        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+<!--    </select>-->
+
+    <select id="findUsersByIdAndQqEmail" parameterType="map" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user
+        WHERE id LIKE CONCAT('%', #{id}, '%')
+          AND email LIKE '%@qq.com'
+    </select>
+
+
+    <select id="findUserByMap" parameterType="map" resultType="pojo.User">
+        SELECT id, username, email, phone FROM user
+        <where>
+            <if test="ids != null and ids.size > 0">
+                AND id IN
+                <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
